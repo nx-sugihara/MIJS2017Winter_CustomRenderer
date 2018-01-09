@@ -95,6 +95,9 @@ namespace MIJSWinter1.iOS
 
         OutputRecorder m_OutputRecorder;
 
+        private const int mc_iPreviewWidth = 512;
+        private const int mc_iPreviewHeight = 384;
+
         public UICameraPreview(CustomCamera camera)
         {
             m_CustomCamera = camera;
@@ -104,7 +107,7 @@ namespace MIJSWinter1.iOS
 
         public void Initialize()
         {
-            this.Frame = new CGRect(new CGPoint(0, 0), new CGSize(100, 200));
+            this.Frame = new CGRect(new CGPoint(0, 0), new CGSize(mc_iPreviewWidth, mc_iPreviewHeight));
             m_AVCapSession = new AVCaptureSession();
 
             //m_AVCapDevice = AVCaptureDevice.GetDefaultDevice(AVMediaTypes.Video);
@@ -116,7 +119,7 @@ namespace MIJSWinter1.iOS
                 //フロントカメラを取得
                 foreach (AVCaptureDevice camDevice in arCamDevice)
                 {
-                    if (camDevice.Position == AVCaptureDevicePosition.Front)
+                    if (camDevice.Position == AVCaptureDevicePosition.Back)
                     {
                         m_AVCapDevice = camDevice;
                     }
@@ -183,7 +186,7 @@ namespace MIJSWinter1.iOS
 
                 m_prevAVLayer = new AVCaptureVideoPreviewLayer(m_AVCapSession)
                 {
-                    Frame = new CGRect(new CGPoint(0, 0), new CGSize(100, 200)),
+                    Frame = new CGRect(new CGPoint(0, 0), new CGSize(mc_iPreviewWidth, mc_iPreviewHeight)),
                     VideoGravity = AVLayerVideoGravity.ResizeAspectFill
                 };
                 Layer.AddSublayer(m_prevAVLayer);

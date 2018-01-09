@@ -3,19 +3,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
     x:Class="MIJSWinter1.TestPage" 
     xmlns:local="clr-namespace:MIJSWinter1"
-    Title="New Item">
+    Title="Camera">
     <ContentPage.BindingContext>
         <local:MyPageViewModel />
     </ContentPage.BindingContext>
-    <StackLayout VerticalOptions="Center">
-        <Slider x:Name="slider" Maximum="100"
-            Minimum="0"
-            Value="{Binding SliderValue}"
-            VerticalOptions="StartAndExpand" />
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
         <Button Text="{StaticResource text}" Clicked="OnClicked" />
-        <Label Text="{Binding LabelValue}" FontSize="Medium" x:Name="TestLabel"/>
-        <Entry Text="{Binding Value, Source={x:Reference slider}, StringFormat='Slider value is {0:000}.'}" FontSize="Medium"/>
-        <Label Text="{Binding OSName}" FontSize="Medium" x:Name="OSLabel"/>
         <local:CustomCamera />
     </StackLayout>
 

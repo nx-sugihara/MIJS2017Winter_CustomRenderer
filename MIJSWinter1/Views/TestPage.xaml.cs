@@ -19,7 +19,8 @@ namespace MIJSWinter1
             };
 
 
-
+            /*
+             //OSごとの実装　実験
             switch (Device.RuntimePlatform)
             {
                 case Device.iOS:
@@ -29,7 +30,7 @@ namespace MIJSWinter1
                     this.OSLabel.Text = "Android";
                     break;
             }
-
+            */
             BindingContext = this;
         }
 
@@ -40,7 +41,6 @@ namespace MIJSWinter1
 
         private void Handle_Clicked(object sender, EventArgs e)
         {
-            this.OSLabel.Text = DateTime.Now.ToString();
         }
     }
 }
