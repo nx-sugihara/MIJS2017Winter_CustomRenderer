@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using UIKit;
 using Xamarin.Forms.Platform.iOS;
+using CoreImage;
 using AVFoundation;
 using CoreGraphics;
 using CoreFoundation;
@@ -175,7 +176,11 @@ namespace MIJSWinter1.iOS
 
                     m_AVCapSession.CommitConfiguration();
 
-                    m_AVVideoOutput = new AVCaptureVideoDataOutput();
+                    m_AVVideoOutput = new AVCaptureVideoDataOutput()
+                    {
+                        AlwaysDiscardsLateVideoFrames = true,
+                        WeakVideoSettings = new CVPixelBufferAttributes { PixelFormatType = CVPixelFormatType.CV32BGRA }.Dictionary
+                    };
 
                     m_OutputRecorder = new OutputRecorder() { m_CustomCamera = m_CustomCamera };
                     var Queue = new DispatchQueue("myQueue");
@@ -209,6 +214,7 @@ namespace MIJSWinter1.iOS
 
         private UIImage GetImageFromSampleBuffer(CMSampleBuffer sampleBuffer)
         {
+            /*
             using (var pixelBuffer = sampleBuffer.GetImageBuffer() as CVPixelBuffer)
             {
                 // Lock the base address
@@ -243,6 +249,46 @@ namespace MIJSWinter1.iOS
                     }
                 }
             }
+            */
+
+            UIImage ret = null;
+            try
+            {
+               
+                // Get the CoreVideo image
+                using (var pixelBuffer = sampleBuffer.GetImageBuffer() as CVPixelBuffer)
+                {
+                    // Lock the base address
+                    pixelBuffer.Lock(CVPixelBufferLock.None);
+                    // Get the number of bytes per row for the pixel buffer
+
+                    var baseAddress = pixelBuffer.BaseAddress;
+                    nint bytesPerRow = pixelBuffer.BytesPerRow;
+                    nint width = pixelBuffer.Width;
+                    nint height = pixelBuffer.Height;
+
+                    var flags = CGBitmapFlags.PremultipliedFirst | CGBitmapFlags.ByteOrder32Little;
+                    // Create a CGImage on the RGB colorspace from the configured parameter above
+                    using (var cs = CGColorSpace.CreateDeviceRGB())
+                    using (var context = new CGBitmapContext(baseAddress, width, height, 8, bytesPerRow, cs, flags))
+                    using (var cgImage = context.ToImage())
+                    {
+                        pixelBuffer.Unlock(CVPixelBufferLock.None);
+                        ret =  UIImage.FromImage(cgImage);
+
+                    }
+                }
+            }
+            finally
+            {
+                sampleBuffer.Dispose();
+            }
+            return ret;
+            /*
+            CVPixelBuffer imageBuffer = sampleBuffer.GetImageBuffer() as CVPixelBuffer;
+            CIImage img = new CIImage(imageBuffer);
+            return UIImage.FromImage(img);
+            */
         }
 
         public override void DidOutputSampleBuffer(
@@ -253,9 +299,21 @@ namespace MIJSWinter1.iOS
 
             try
             {
-                Console.WriteLine("test");
                 // ここでフレーム画像を取得していろいろしたり
-                //var image = GetImageFromSampleBuffer (sampleBuffer);
+
+                if(m_CustomCamera.Shutter)
+                {
+                    UIImage uiimage = GetImageFromSampleBuffer (sampleBuffer);
+                    Xamarin.Forms.ImageSource img = Xamarin.Forms.ImageSource.FromStream(() => uiimage.AsPNG().AsStream());
+                    //Xamarin.Forms.ImageSource img = Xamarin.Forms.ImageSource.FromFile("tab_feed.png");
+
+                    m_CustomCamera.Shutter = false;
+                    InvokeOnMainThread(
+                        ()=>{
+                            m_CustomCamera.onShutter(img);
+                        }
+                    );
+                }
 
                 //PCLプロジェクトとのやりとりやら
     

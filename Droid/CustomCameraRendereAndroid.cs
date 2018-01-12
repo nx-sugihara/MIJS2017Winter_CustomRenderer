@@ -87,7 +87,7 @@ namespace MIJSWinter1.Droid
                 backCameraId = cameraId;
 
                 StreamConfigurationMap configs = (StreamConfigurationMap)manager.GetCameraCharacteristics(cameraId).Get(CameraCharacteristics.ScalerStreamConfigurationMap);
-                Android.Util.Size[] size = configs.GetOutputSizes( (int)Android.Graphics.ImageFormat.Jpeg);
+                Android.Util.Size[] size = configs.GetOutputSizes( (int)Android.Graphics.ImageFormatType.Jpeg);
                 //ここに含まれるSizeを指定する
 
                 ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams)m_surfaceView.LayoutParameters;

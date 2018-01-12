@@ -39,6 +39,7 @@
 
     <Compile Include="$(MSBuildThisFileDirectory)Models\BinderBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomRenderer\CustomCamera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\TestViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AboutPage.xaml" />

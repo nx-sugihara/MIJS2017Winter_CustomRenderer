@@ -8,13 +8,14 @@
         <local:MyPageViewModel />
     </ContentPage.BindingContext>
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-        <Button Text="{StaticResource text}" Clicked="OnClicked" />
-        <local:CustomCamera />
+        <Image x:Name="image" Rotation="90" Scale="0.5"/>
+        <Button Clicked="OnClicked" x:Name="ShutterButton"/>
+        <local:CustomCamera x:Name="Camera" Scale="0.5"/>
     </StackLayout>
 
     <ContentPage.Resources>              
       <ResourceDictionary>
-        <x:String x:Key="text">Hello world</x:String>
+        <x:String x:Key="text">写真を撮る</x:String>
       </ResourceDictionary> 
     </ContentPage.Resources>
         
